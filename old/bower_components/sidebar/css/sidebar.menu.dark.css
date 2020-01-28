@@ -1,0 +1,108 @@
+
+/*!
+ * Sidebar menu for Bootstrap 4
+ * Copyright ZdenÄ›k PapuÄŤĂ­k
+ * MIT License
+*/
+
+/* bg website
+   ========================================================================== */
+   body {
+    background: #f4f4f4;
+}
+
+/* sidebar bg
+   ========================================================================== */
+.bg-dark-2.sidebar {
+    background: #1d222c;
+}
+
+/* sidebar list
+   ========================================================================== */
+.bg-dark-2.sidebar ul.menu li {
+    color: #8a8a8a;
+}
+
+.bg-dark-2.sidebar ul.menu li ul li ul {
+    border-left: 0.0625rem solid #363c49;
+}
+
+/* sidebar hyperlink
+   ========================================================================== */
+.bg-dark-2.sidebar ul.menu li ul li a {
+    border-radius: 0.1875rem;
+    color: #eaedf1;
+}
+
+.bg-dark-2.sidebar ul.menu li ul li a:hover {
+    background: #363c49;
+
+}
+
+.bg-dark-2.sidebar ul.menu li ul li a.current {
+    background: #363c49;
+}
+
+.bg-dark-2.sidebar ul.menu li ul li.parent a.current {
+    background: #363c49;
+}
+
+.bg-dark-2.sidebar ul.menu li ul li.parent .submenu a.current {
+    background: #363c49;
+}
+
+/* sidebar hyperlink icon
+   ========================================================================== */
+.bg-dark-2.sidebar ul.menu li ul li.parent a.employ:before {
+    color: #6b7382;
+}
+
+.bg-dark-2.sidebar ul.menu li ul li.parent a.employ.active:before {
+    color: #b9b9b9;
+}
+
+/* navbar bg
+   ========================================================================== */
+.bg-dark-2.navbar {
+    background: #f4f4f4;
+}
+
+/* sidebar menu button
+   ========================================================================== */
+.bg-dark-2 a#sidebar.bars {
+    color: #c9c9c9;
+}
+
+.bg-dark-2 a#sidebar.bars:hover {
+    color: #919191;
+}
+
+/* navbar title
+   ========================================================================== */
+.bg-dark-2.navbar a.navbar-title {
+    color: #494949;
+}
+
+/* website content
+   ========================================================================== */
+.content .box {
+    color: #494949;
+}
+
+/* custom perfect scrollbar style
+   ========================================================================== */
+.bg-dark-2.sidebar .ps__thumb-y {
+    background: #e0e0e0;
+}
+
+.bg-dark-2.sidebar .ps__rail-y:hover > .bg-dark-2.sidebar .ps__thumb-y,
+.bg-dark-2.sidebar .ps__rail-y:focus > .bg-dark-2.sidebar .ps__thumb-y,
+.bg-dark-2.sidebar .ps__rail-y.ps--clicking .ps__thumb-y {
+    background: #e0e0e0;
+}
+
+.bg-dark-2.sidebar .ps .ps__rail-y:hover,
+.bg-dark-2.sidebar .ps .ps__rail-y:focus,
+.bg-dark-2.sidebar .ps .ps__rail-y.ps--clicking {
+    background: none;
+}

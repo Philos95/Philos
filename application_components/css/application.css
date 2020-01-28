@@ -1,0 +1,157 @@
+:root{
+  --main-bg-color: rgb(117,176,236);
+  --second-bg-color:rgb(51,139,227);
+  --third-bg-color:	rgb(52,102,156);
+  --main-txt-color: rgb(52,64,84);
+  --second-txt-color: rgb(22,28,37);
+}
+
+
+
+
+body{
+    padding:1%;
+    margin:1%;
+    /* background-color: grey; */
+    background-color: var(--main-bg-color);
+  
+  }
+
+  .container {
+    width: 90%;
+    padding: 1% 5% 1% 5%;
+  }
+
+  .header h1{
+    margin-bottom: 10px;
+  }
+
+  .header{
+    background-color : var(--second-bg-color);
+    color : var(--main-txt-color);
+    padding: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 150%;
+    border-radius: 25px;
+    margin:15px;
+  }
+
+
+
+  .topnav a{
+    float:left;
+    background-color: var(--second-bg-color);
+    color:  var(--main-txt-color);
+    text-align: center;
+    height: 1%;
+    vertical-align: middle;
+    width : 33.3%;
+    padding: 1% 0% 1% 0%;
+    margin-bottom: 1%;
+    text-decoration: none;
+    font-family: monospace;
+    border-radius: 25px;
+  
+  
+  }
+  
+  .topnav a:hover{
+    background-color: var(--third-bg-color);
+    /* font-size: 200%;
+    padding: 0.5% 0% 1.5% 0%; */
+  }
+
+  hr{
+    background-color: 	var(--third-bg-color);
+    color:var(--third-bg-color);
+    border-style:solid;
+    margin:1px;
+    margin-left:1.5%;
+    width:97%;
+  }
+
+  ul {
+    list-style-type: none;
+  
+  }
+  
+
+
+  .projects{
+
+    float:left;
+    width : 80%;
+    background-color: var(--third-bg-color);
+    padding: 2%;
+    margin: 2%;
+    margin-left:10%;
+    font-family: monospace;
+    
+  
+  }
+  .projects h2{
+    text-align:  center;
+    color: var(--second-txt-color);
+
+  }
+
+  .projects .projectList a{
+    text-decoration: none;
+  
+  }
+
+  .project{
+    background-color: var(--second-bg-color);
+    /* 120,170,120); */
+    /* border-color: rgb(200,255,200);
+    border-width: thick;
+    border-style: solid; */
+    float :left;
+    margin : 1%;
+    width: 90%
+  
+  }
+
+  .project .projectName{
+    color: var(--main-txt-color);
+    text-align: center;
+    float: left;
+    padding: 2% 0% 0% 20%;
+    font-size : 20px;
+
+  }
+
+  .project .projectDate{
+    color: var(--second-txt-color);
+    text-align: center;
+    float: left;
+   
+  }
+
+  .project .projectDescription{
+    color: var(--second-txt-color);
+    padding: 5%;
+    /* 45% 5% 5%; */
+    
+    float:center;
+  }
+
+  .project img{
+    padding: 5%;
+    /* 45% 5% 5%; */
+    width : 20%;
+    float:left;
+  }
+
+  #sketch-holder{
+   
+    padding-left :15%;
+    padding-right:15%
+  }
+
+  .sketch-wrapper{
+   
+    padding-left :15%;
+    padding-right:15%
+  }

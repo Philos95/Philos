@@ -1,0 +1,26 @@
+  .dataTables_wrapper .dt-buttons {
+    float:left;  
+    text-align:center;
+    padding-top:10px;
+    padding-bottom:10px; 
+  }
+  
+  .dataTables_length{
+    float:right;  
+    padding:10px; 
+  }
+
+  .dataTables_filter{
+    float:right;
+    padding:10px;  
+  }
+  
+  .dataTables_info{
+    float:left;  
+    padding:10px; 
+  }
+  
+  .dataTables_paging{
+    float:right; 
+    padding:10px;  
+  }
