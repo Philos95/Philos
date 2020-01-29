@@ -1,4 +1,7 @@
-const TOT_DATA = 100;
+const TOT_DATA = 10000;
+const TRAIN_TIMES = 10;
+const NUM_EPOCHS = 100;
+
 let R;
 let G;
 let B;
@@ -6,6 +9,8 @@ let B;
 let FrameSlider;
 let frameSpan;
 
+
+let getTheData = false;
 let trainComplete = false;
 let startGame = false;
 
@@ -18,8 +23,13 @@ let H= 500;
 
 let data;
 
+let model;
+
+let actualLoss=0;
+let loss= new Array();
 
 
+let trainPerc=0;
 
 async function setup(){
 
@@ -29,103 +39,15 @@ async function setup(){
     FrameSlider = select('#frameSlider');
     frameSpan = select('#frame');
 
-    data =  await getData();
+    data = await getData();
+    getTheData = true;
+    console.log("get Data!");
+    console.log(data); 
 
-}
+    model = await setModel();
+    console.log("set Model!");
+    console.log(model); 
 
-
-function draw(){
-    background(0);
-    
-    if (startGame){
-        frameRate(FrameSlider.value());
-        frameSpan.html(FrameSlider.value())
-        pickColor();
-        background(150);
-
-        fill(R,G,B);
-        rect(W+50, (H/4)-30, 100, 100, 20 )
-
-        printBack();
-
-        let predictC = predictColor()
-
-        printColor(predictC,255,80);
-    
-        let rightC = rightColor(R,G,B)
-      
-        printColor(rightC,0,20);
-
-
-        if(predictC == rightC){
-            Win++;
-        }else{
-            Lose++
-        }
-    
-
-    }else{
-        if(!trainComplete){
-            console.log("cisipassa");
-            background(0);
-            trainAI();
-           
-
-        }else{
-            background(0);
-            textSize(32);
-            textAlign(CENTER, CENTER);
-            fill(255);
-            text('Training Done!', width/2, (height/2) -50);
-            text('Click to Start Game', width/2, height/2);
-        }
-    }
-
-
-
-}
-
-async function getData(){
-   
-    const colorsDataReq = await fetch('dataFromDB.php?action=takeData&limit='+TOT_DATA);  
-    const colorsData = await colorsDataReq.json();  
-    const cleaned = colorsData.map(colorS => ({
-        R: colorS.R,
-        G: colorS.G,
-        B: colorS.B,
-        color:colorS.color,
-    }))
-    .filter(colorS => (colorS.R != null && colorS.G != null && colorS.B != null && colorS.color != null));
-    
-    return cleaned;
-   
-}
-
-
-
-
- async function trainAI(){
-
-    //first thing first to do the rest just one time!!!
-    trainComplete = true;
- 
-    
-
-   //Create sequential Model
-   const model = tf.sequential();
-
-    //Add a single hidden layer
-    model.add(tf.layers.dense({inputShape: [3], units: 7 ,activation: 'sigmoid'}));
-
-    //Add output layer
-    model.add(tf.layers.dense({units: 6, activation: 'sigmoid'}));
-
-    const sgdOpt = tf.train.sgd(0.5);
-
-    model.compile({
-        optimizer: sgdOpt,
-        loss: tf.losses.meanSquaredError
-    })
 
 
     tf.util.shuffle(data);
@@ -145,60 +67,144 @@ async function getData(){
 
     train(model,xs,ys).then(()=>{
         console.log("training Done")
-        let outputs = model.predict(tf.tensor2d([200/255,0/255,0/255],[1,3]));
-        outputs.print();
+
+        trainComplete= true;
+      
     });
+
+
     
-
-        console.log("training Done!")
-
-   
-
 }
 
 
+
+
+
+async function draw(){
+    if(!getTheData){
+        background(0);
+        textSize(32);
+        textAlign(CENTER, CENTER);
+        fill(255);
+        text('Getting the Data from DB', width/2, (height/2) -50);
+        text('Just Wait...', width/2, height/2);
+    }else{
+        //Get The Data
+        if(!trainComplete){
+            background(0);
+            textSize(32);
+            textAlign(CENTER, CENTER);
+            fill(255);
+            text('Training the AI', width/2, (height/2) -50);
+            text('Training at: '+trainPerc+'%', width/2, height/2);
+            text('LOSS: '+actualLoss, width/2, (height/2)+50);
+        }else{
+            //Train Complete
+            if(!startGame){
+                background(0);
+                textSize(32);
+                textAlign(CENTER, CENTER);
+                fill(255);
+                text('Training Complete!', width/2, (height/2) -50);
+                text('Click to start the game! ', width/2, height/2);
+                text('LOSS: '+actualLoss, width/2, (height/2)+50);
+            }else{
+                //Start the game
+                frameRate(FrameSlider.value());
+                frameSpan.html(FrameSlider.value())
+                pickColor();
+                background(150);
+
+                fill(R,G,B);
+                rect(W+50, (H/4)-30, 100, 100, 20 )
+
+                printBack();
+
+                let predictC = predictColor()
+
+                printColor(predictC,255,80);
+            
+                let rightC = rightColor(R,G,B)
+            
+                printColor(rightC,0,20);
+
+
+                if(predictC == rightC){
+                    Win++;
+                }else{
+                    Lose++
+                } 
+            }
+        }
+
+    }
+
+    
+}
+
+
+
+
+
+
+//GET Data
+async function getData(){
+   
+    const colorsDataReq = await fetch('dataFromDB.php?action=takeData&limit='+TOT_DATA);  
+    const colorsData = await colorsDataReq.json();  
+    const cleaned = colorsData.map(colorS => ({
+        R: colorS.R,
+        G: colorS.G,
+        B: colorS.B,
+        color:colorS.color,
+    }))
+    .filter(colorS => (colorS.R != null && colorS.G != null && colorS.B != null && colorS.color != null));
+    
+    return cleaned;
+   
+}
+
+//SET Model
+async function setModel(){
+    let model = tf.sequential();
+
+    //Add a single hidden layer
+    model.add(tf.layers.dense({inputShape: [3], units: 7 ,activation: 'sigmoid'}));
+
+    //Add output layer
+    model.add(tf.layers.dense({units: 6, activation: 'sigmoid'}));
+
+    const sgdOpt = tf.train.sgd(0.5);
+
+    model.compile({
+        optimizer: sgdOpt,
+        loss: tf.losses.meanSquaredError
+    })
+
+    return model;
+}
+
+
+//Train AI
 async function train(model,xs,ys){  
-    for(var i=0;i<10;i++){
+    for(var i=0;i<TRAIN_TIMES;i++){
     
           const config={
-            epochs:10
+            epochs:NUM_EPOCHS
           }
       const response = await model.fit(xs,ys,config);
+      trainPerc = i*100/TRAIN_TIMES;
+      actualLoss = response.history.loss[0];
       console.log(response.history.loss[0]);
     }
 }
 
 
 
+function inputData(item){
+    return [parseInt(item.R),parseInt(item.G),parseInt(item.B)];
 
-
-function predictColor(){
-    
-
-    let colorArray = model.predict(tf.tensor2d([R/255,G/255,B/255],[1,3]));
-
-    let colorPredicted = 0;
- 
-    for(let i =1; i<colorArray.length;i++){
-        if(colorArray[i]>colorArray[colorPredicted]){
-            colorPredicted = i;
-        }
-    }
-    switch (colorPredicted){
-         case 0:
-             return"blue";
-         case 1:
-             return"green";
-         case 2:
-             return"red";
-         case 3:
-             return"yellow";
-         case 4:
-             return"magenta"; 
-         case 5:
-             return"cyan";  
-    }
- }
+}
 
 
 
@@ -230,13 +236,6 @@ function colorToAnswer(color){
     return answer;
 }
 
-function pickColor(){
-    R = random(255);
-    G = random(255);
-    B = random(255); 
-    
-}
-
 
 
 function mouseClicked(){
@@ -248,84 +247,12 @@ function mouseClicked(){
 }
 
 
-
-function rightColor(r,g,b){
-    let actualColor = rightRGB(r,g,b);
-    let limit =300;
-   
-    if((g+b)-r > limit){
-        actualColor = "cyan";
-    }else if((r+g)-b>limit){
-        actualColor =  "yellow";
-    }else if((r+b)-g>limit){
-        actualColor =  "magenta";
-
-    }
-    return actualColor;
-}
-
-function rightRGB(r,g,b){
-    let colorArray=[];
-
-    colorArray[0]=(r);
-    colorArray[1]=(g);
-    colorArray[2]=(b);
-    let pColor =max(colorArray);
+function pickColor(){
+    R = random(255);
+    G = random(255);
+    B = random(255); 
     
-
-    switch(pColor){
-         case colorArray[0]:
-            return "red";
-         case colorArray[1]:
-            return "green";
-         case colorArray[2]:
-            return "blue";
-    }
 }
-
-
-
-function printColor(color,type,y_off){
-    let x;
-    let y;
-    switch(color){
-        //1°
-        case "blue":
-            x= W/6;
-            y = H/4;
-        break;
-        //2
-        case "green":
-            x= W/2;
-            y = H/4;
-        break;
-        //3
-        case "red":
-            x= W*5/6;
-            y = H/4;
-        break;
-        //4
-        case "yellow":
-            x= W/6;
-            y = H*3/4;
-        break;
-        //5
-        case "magenta":
-            x= W/2;
-            y = H*3/4;
-        break;
-        //6
-        case "cyan":
-            x= W*5/6;
-            y = H*3/4;
-        break;
-    }
-    fill(type);
-    ellipse(x,y+y_off,40,40);
-}
-
-
-
 
 
 function printBack(){
@@ -372,11 +299,110 @@ function printBack(){
 
 
 
-
-
-
-function inputData(item){
-    return [parseInt(item.R),parseInt(item.G),parseInt(item.B)];
-
+function printColor(color,type,y_off){
+    let x;
+    let y;
+    switch(color){
+        //1°
+        case "blue":
+            x= W/6;
+            y = H/4;
+        break;
+        //2
+        case "green":
+            x= W/2;
+            y = H/4;
+        break;
+        //3
+        case "red":
+            x= W*5/6;
+            y = H/4;
+        break;
+        //4
+        case "yellow":
+            x= W/6;
+            y = H*3/4;
+        break;
+        //5
+        case "magenta":
+            x= W/2;
+            y = H*3/4;
+        break;
+        //6
+        case "cyan":
+            x= W*5/6;
+            y = H*3/4;
+        break;
+    }
+    fill(type);
+    ellipse(x,y+y_off,40,40);
 }
 
+
+
+function rightColor(r,g,b){
+    let actualColor = rightRGB(r,g,b);
+    let limit =300;
+   
+    if((g+b)-r > limit){
+        actualColor = "cyan";
+    }else if((r+g)-b>limit){
+        actualColor =  "yellow";
+    }else if((r+b)-g>limit){
+        actualColor =  "magenta";
+
+    }
+    return actualColor;
+}
+
+function rightRGB(r,g,b){
+    let colorArray=[];
+
+    colorArray[0]=(r);
+    colorArray[1]=(g);
+    colorArray[2]=(b);
+    let pColor =max(colorArray);
+    
+
+    switch(pColor){
+         case colorArray[0]:
+            return "red";
+         case colorArray[1]:
+            return "green";
+         case colorArray[2]:
+            return "blue";
+    }
+}
+
+
+
+function predictColor(){
+    
+    let tensor = model.predict(tf.tensor2d([R/255,G/255,B/255],[1,3]));
+    tensor.print();
+
+    let values = tensor.dataSync();
+    let colorArray = Array.from(values);
+
+    let colorPredicted = 0;
+ 
+    for(let i =1; i<colorArray.length;i++){
+        if(colorArray[i]>colorArray[colorPredicted]){
+            colorPredicted = i;
+        }
+    }
+    switch (colorPredicted){
+         case 0:
+             return"blue";
+         case 1:
+             return"green";
+         case 2:
+             return"red";
+         case 3:
+             return"yellow";
+         case 4:
+             return"magenta"; 
+         case 5:
+             return"cyan";  
+    }
+ }
