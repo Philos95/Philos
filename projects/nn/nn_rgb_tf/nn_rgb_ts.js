@@ -1,6 +1,6 @@
-const TOT_DATA = 10000;
-const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 100;
+const TOT_DATA = 100;
+const TRAIN_TIMES = 1000;
+const NUM_EPOCHS = 2;
 
 let R;
 let G;
