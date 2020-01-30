@@ -1,5 +1,5 @@
-const TOT_DATA = 100;
-const TRAIN_TIMES = 1000;
+const TOT_DATA = 1000;
+const TRAIN_TIMES = 10;
 const NUM_EPOCHS = 2;
 
 let R;
@@ -43,7 +43,7 @@ async function setup(){
     getTheData = true;
     console.log("get Data!");
     console.log(data); 
-
+    
     model = await setModel();
     console.log("set Model!");
     console.log(model); 
@@ -190,6 +190,7 @@ async function train(model,xs,ys){
     for(var i=0;i<TRAIN_TIMES;i++){
     
           const config={
+            shuffle:true,
             epochs:NUM_EPOCHS
           }
       const response = await model.fit(xs,ys,config);
@@ -248,9 +249,17 @@ function mouseClicked(){
 
 
 function pickColor(){
+     var item = data[Math.floor(Math.random()*data.length)];
+    R = parseInt(item.R);
+    G = parseInt(item.G);
+    B = parseInt(item.B);
+    
+    //console.log("R:"+R+" G: "+G+" B: "+B);
+  /*   console.log(rightColor(R,G,B)); 
     R = random(255);
     G = random(255);
-    B = random(255); 
+    B = random(255); */
+    console.log(rightColor(R,G,B));
     
 }
 
@@ -379,7 +388,7 @@ function rightRGB(r,g,b){
 function predictColor(){
     
     let tensor = model.predict(tf.tensor2d([R/255,G/255,B/255],[1,3]));
-    tensor.print();
+    //tensor.print();
 
     let values = tensor.dataSync();
     let colorArray = Array.from(values);
