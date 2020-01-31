@@ -1,13 +1,32 @@
 const TOT_DATA = 1000;
-const TRAIN_TIMES = 1;
+const TRAIN_TIMES = 10;
 const NUM_EPOCHS = 10;
 
-let R;
-let G;
-let B;
+let getTheData = false;
+let trainComplete = false;
+let startGame = false;
 
-let FrameSlider;
-let frameSpan;
+let Lose =0;
+let Win = 0;
+let trained=0;
+let trainPerc=0;
+
+let r,g,b;
+let xs,ys;
+
+let W =750;
+let H= 500;
+
+let startTime=0;
+let timeLeft=0;
+
+
+let data;
+
+let model;
+
+let actualLoss=0;
+let loss= new Array();
 
 
 let labelList = [
@@ -20,26 +39,6 @@ let labelList = [
 ]
 
 
-let getTheData = false;
-let trainComplete = false;
-let startGame = false;
-
-let Lose =0;
-let Win = 0;
-let trained=0;
-
-let W =750;
-let H= 500;
-
-let data;
-
-let model;
-
-let actualLoss=0;
-let loss= new Array();
-
-
-let trainPerc=0;
 
 
 async function setup(){
@@ -65,13 +64,30 @@ async function setup(){
    // console.log(inputs);
 
 
-    const xs = tf.tensor2d(inputs,[inp.length,3]);
-    xs.print();
-    
-    
-    const labels = data.map(colorS=> colorToAnswer(colorS.color));
-    const ys = tf.tensor2d(labels,[labels.length,6]);
-    ys.print();
+    let colors = [];
+    let labels = [];
+    for (let record of data) {
+      let col = [record.R / 255, record.G / 255, record.B / 255];
+      colors.push(col);
+      labels.push(labelList.indexOf(record.color));
+      
+    }
+
+    //console.log(colors);
+    //console.log(lab);
+
+
+    xs = tf.tensor2d(colors);
+
+    let labelsTensor = tf.tensor1d(labels, 'int32');
+    ys = tf.oneHot(labelsTensor, 9).cast('float32');
+    labelsTensor.dispose();
+
+    //xs.print();
+    //ys.print();
+
+
+    model = await setModel();
 
 
     train(model,xs,ys).then(()=>{
@@ -81,10 +97,7 @@ async function setup(){
       
     });
 
-
-    
 }
-
 
 
 
@@ -107,6 +120,7 @@ async function draw(){
             text('Training the AI', width/2, (height/2) -50);
             text('Training at: '+trainPerc+'%', width/2, height/2);
             text('LOSS: '+actualLoss, width/2, (height/2)+50);
+            text('TimeLeft: '+timeLeft+'s', width/2, (height/2)+100);
         }else{
             //Train Complete
             if(!startGame){
@@ -125,16 +139,17 @@ async function draw(){
                     pickColor();
                     background(150);
 
-                    fill(R,G,B);
+
+                    fill(r,g,b);
                     rect(W+50, (H/4)-30, 100, 100, 20 )
 
                     printBack();
 
-                    let predictC = predictColor()
-
+                    let predictC = predictColor(r,g,b)
+                   
                     printColor(predictC,255,80);
                 
-                    let rightC = rightColor(R,G,B)
+                    let rightC = rightColor(r,g,b)
                 
                     printColor(rightC,0,20);
 
@@ -150,60 +165,6 @@ async function draw(){
 
     }
 
-    
-}
-
-
-
-function colorToAnswer(color){
-    let answer;
-    switch(color){
-        case "blue":
-            answer=[1,0,0,0,0,0];
-        break;
-        case "green":
-            answer=[0,1,0,0,0,0];
-        break;
-        case "red":
-            answer=[0,0,1,0,0,0];
-        break;
-        case "yellow":
-            answer=[0,0,0,1,0,0];
-        break;
-        case "magenta":
-            answer=[0,0,0,0,1,0];
-        break;
-        case "cyan":
-            answer=[0,0,0,0,0,1];
-        break;
-    }
-
-    return answer;
-}
-
-
-
-function mouseClicked(){
-    if((mouseX>0 &&mouseX<width) && (mouseY>0 &&mouseY<height)){
-        if(trainComplete){
-            startGame = !startGame;
-        }
-    }
-}
-
-
-function pickColor(){
-     var item = data[Math.floor(Math.random()*data.length)];
-    R = parseInt(item.R);
-    G = parseInt(item.G);
-    B = parseInt(item.B);
-    
-    //console.log("R:"+R+" G: "+G+" B: "+B);
-  /*   console.log(rightColor(R,G,B)); 
-    R = random(255);
-    G = random(255);
-    B = random(255); */
-   // console.log(rightColor(R,G,B));
     
 }
 
@@ -249,7 +210,6 @@ function printBack(){
    
 
 }
-
 
 
 function printColor(color,type,y_off){
@@ -329,33 +289,21 @@ function rightRGB(r,g,b){
 
 
 
-function predictColor(){
-    
-    let tensor = model.predict(tf.tensor2d([R/255,G/255,B/255],[1,3]));
-    //tensor.print();
 
-    let values = tensor.dataSync();
-    let colorArray = Array.from(values);
+function pickColor(){
+    var item = data[Math.floor(Math.random()*data.length)];
+   r = parseInt(item.R);
+   g = parseInt(item.G);
+   b = parseInt(item.B);
+   
+}
 
-    let colorPredicted = 0;
- 
-    for(let i =1; i<colorArray.length;i++){
-        if(colorArray[i]>colorArray[colorPredicted]){
-            colorPredicted = i;
+
+
+function mouseClicked(){
+    if((mouseX>0 &&mouseX<width) && (mouseY>0 &&mouseY<height)){
+        if(trainComplete){
+            startGame = !startGame;
         }
     }
-    switch (colorPredicted){
-         case 0:
-             return"blue";
-         case 1:
-             return"green";
-         case 2:
-             return"red";
-         case 3:
-             return"yellow";
-         case 4:
-             return"magenta"; 
-         case 5:
-             return"cyan";  
-    }
- }
+}

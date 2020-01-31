@@ -28,6 +28,7 @@
 <script src="/philos/classes/js/NeuralNetwork/nn.js"></script>
 <script src="/philos/classes/js/NeuralNetwork/matrix.js"></script>
 <script src="nn_rgb_ts.js"></script>
+<script src="sketch.js"></script>
  
 
 
