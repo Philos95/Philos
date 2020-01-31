@@ -1,6 +1,6 @@
 const TOT_DATA = 1000;
-const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 2;
+const TRAIN_TIMES = 100;
+const NUM_EPOCHS = 1;
 
 let R;
 let G;
@@ -41,13 +41,13 @@ async function setup(){
 
     data = await getData();
     getTheData = true;
-    console.log("get Data!");
-    console.log(data); 
+    /* console.log("get Data!");
+    console.log(data);  */
     
     model = await setModel();
-    console.log("set Model!");
+    /* console.log("set Model!");
     console.log(model); 
-
+ */
 
 
     tf.util.shuffle(data);
@@ -55,14 +55,16 @@ async function setup(){
     
     var inp = data.map(inputData);
     const inputs = inp.flat();
+    //const normalizedInputs = inputs
+    console.log(inputs);
 
     const xs = tf.tensor2d(inputs,[inp.length,3]);
-    console.log(xs);
+    xs.print();
     
     
     const labels = data.map(colorS=> colorToAnswer(colorS.color));
     const ys = tf.tensor2d(labels,[labels.length,6]);
-    console.log(ys);
+    ys.print();
 
 
     train(model,xs,ys).then(()=>{
@@ -110,30 +112,32 @@ async function draw(){
                 text('LOSS: '+actualLoss, width/2, (height/2)+50);
             }else{
                 //Start the game
-                frameRate(FrameSlider.value());
-                frameSpan.html(FrameSlider.value())
-                pickColor();
-                background(150);
+                tf.tidy(() => {
+                    frameRate(FrameSlider.value());
+                    frameSpan.html(FrameSlider.value())
+                    pickColor();
+                    background(150);
 
-                fill(R,G,B);
-                rect(W+50, (H/4)-30, 100, 100, 20 )
+                    fill(R,G,B);
+                    rect(W+50, (H/4)-30, 100, 100, 20 )
 
-                printBack();
+                    printBack();
 
-                let predictC = predictColor()
+                    let predictC = predictColor()
 
-                printColor(predictC,255,80);
-            
-                let rightC = rightColor(R,G,B)
-            
-                printColor(rightC,0,20);
+                    printColor(predictC,255,80);
+                
+                    let rightC = rightColor(R,G,B)
+                
+                    printColor(rightC,0,20);
 
 
-                if(predictC == rightC){
-                    Win++;
-                }else{
-                    Lose++
-                } 
+                    if(predictC == rightC){
+                        Win++;
+                    }else{
+                        Lose++
+                    } 
+                })
             }
         }
 
@@ -171,6 +175,9 @@ async function setModel(){
     //Add a single hidden layer
     model.add(tf.layers.dense({inputShape: [3], units: 7 ,activation: 'sigmoid'}));
 
+    //Add hidden layer
+    //model.add(tf.layers.dense({units: 8, activation: 'sigmoid'}));
+
     //Add output layer
     model.add(tf.layers.dense({units: 6, activation: 'sigmoid'}));
 
@@ -203,7 +210,7 @@ async function train(model,xs,ys){
 
 
 function inputData(item){
-    return [parseInt(item.R),parseInt(item.G),parseInt(item.B)];
+    return [parseFloat(item.R/255),parseFloat(item.G/255),parseFloat(item.B/255)];
 
 }
 
@@ -259,7 +266,7 @@ function pickColor(){
     R = random(255);
     G = random(255);
     B = random(255); */
-    console.log(rightColor(R,G,B));
+   // console.log(rightColor(R,G,B));
     
 }
 
