@@ -1,6 +1,6 @@
 const TOT_DATA = 1000;
 const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 10;
+const NUM_EPOCHS = 40;
 
 let getTheData = false;
 let trainComplete = false;
@@ -50,16 +50,18 @@ async function setup(){
     frameSpan = select('#frame');
 
     data = await getData();
+    console.log("Get Data!");
     getTheData = true;
 
     
     model = await setModel();
+    console.log("Set Model!");
     
 
     tf.util.shuffle(data);
     
-    var inp = data.map(inputData);
-    const inputs = inp.flat();
+    /* var inp = data.map(inputData);
+    const inputs = inp.flat(); */
     //const normalizedInputs = inputs
    // console.log(inputs);
 
@@ -67,10 +69,9 @@ async function setup(){
     let colors = [];
     let labels = [];
     for (let record of data) {
-      let col = [record.R / 255, record.G / 255, record.B / 255];
+      let col = [parseFloat(record.R / 255), parseFloat(record.G / 255), parseFloat(record.B / 255)];
       colors.push(col);
-      labels.push(labelList.indexOf(record.color));
-      
+      labels.push(labelList.indexOf(record.color));  
     }
 
     //console.log(colors);
@@ -80,11 +81,11 @@ async function setup(){
     xs = tf.tensor2d(colors);
 
     let labelsTensor = tf.tensor1d(labels, 'int32');
-    ys = tf.oneHot(labelsTensor, 9).cast('float32');
+    ys = tf.oneHot(labelsTensor, 6).cast('float32');
     labelsTensor.dispose();
 
-    //xs.print();
-    //ys.print();
+    xs.print();
+    ys.print();
 
 
     model = await setModel();
@@ -120,7 +121,7 @@ async function draw(){
             text('Training the AI', width/2, (height/2) -50);
             text('Training at: '+trainPerc+'%', width/2, height/2);
             text('LOSS: '+actualLoss, width/2, (height/2)+50);
-            text('TimeLeft: '+timeLeft+'s', width/2, (height/2)+100);
+           // text('TimeLeft: '+timeLeft+'s', width/2, (height/2)+100);
         }else{
             //Train Complete
             if(!startGame){

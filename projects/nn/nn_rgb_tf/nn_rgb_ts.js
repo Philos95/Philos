@@ -23,7 +23,7 @@ async function setModel(){
     //Add a single hidden layer
     model.add(tf.layers.dense({
         inputShape: [3], 
-        units: 7,
+        units: 16,
         activation: 'sigmoid'
     }));
 
@@ -32,7 +32,7 @@ async function setModel(){
 
     //Add output layer
     model.add(tf.layers.dense({
-        units: 9, 
+        units: 6, 
         activation: 'softmax'
     }));
 
@@ -59,7 +59,7 @@ async function train(model,xs,ys){
         const config={
             shuffle:true,
             epochs:NUM_EPOCHS,
-            //validationSplit:0.1,
+            validationSplit:0.1,
             callbacks:{
                 onTrainBegin:(logs)=>{
                     startTime = Date.now()/1000
@@ -70,6 +70,8 @@ async function train(model,xs,ys){
                     actualLoss = logs.loss.toFixed(5);
                     timeLeft = parseInt((((Date.now()/1000)-startTime)/(i+epochs))*((TRAIN_TIMES+NUM_EPOCHS)-(i+epochs)));
                     
+
+                    console.log(logs.loss);
                     //console.log(((Date.now()-startTime)/trainPerc)*(100-trainPerc));
                     //console.log(100-trainPerc);
                 },
@@ -94,7 +96,8 @@ function inputData(item){
 
 function predictColor(r,g,b){
     
-    let input = tf.tensor2d([[r,g,b]])
+    let input = tf.tensor2d([[parseFloat(r/255),parseFloat(g/255),parseFloat(b/255)]])
+    input.print();
     let results = model.predict(input);
    
     let argMax = results.argMax(1);
