@@ -1,6 +1,6 @@
 const TOT_DATA = 1000;
 const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 40;
+const NUM_EPOCHS = 10;
 
 let getTheData = false;
 let trainComplete = false;

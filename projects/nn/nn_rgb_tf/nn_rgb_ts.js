@@ -88,16 +88,11 @@ async function train(model,xs,ys){
 }
 
 
-function inputData(item){
-    return [parseFloat(item.R/255),parseFloat(item.G/255),parseFloat(item.B/255)];
-
-}
-
 
 function predictColor(r,g,b){
     
-    let input = tf.tensor2d([[parseFloat(r/255),parseFloat(g/255),parseFloat(b/255)]])
-    input.print();
+    let input = tf.tensor2d([[parseFloat(r/255),parseFloat(g/255),parseFloat(b/255)]]);
+    //input.print();
     let results = model.predict(input);
    
     let argMax = results.argMax(1);
