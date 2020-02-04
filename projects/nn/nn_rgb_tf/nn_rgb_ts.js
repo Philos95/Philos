@@ -23,7 +23,7 @@ async function setModel(){
     //Add a single hidden layer
     model.add(tf.layers.dense({
         inputShape: [3], 
-        units: 16,
+        units: 7,
         activation: 'sigmoid'
     }));
 

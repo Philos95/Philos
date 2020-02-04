@@ -292,10 +292,15 @@ function rightRGB(r,g,b){
 
 
 function pickColor(){
-    var item = data[Math.floor(Math.random()*data.length)];
-   r = parseInt(item.R);
-   g = parseInt(item.G);
-   b = parseInt(item.B);
+    /* var item = data[Math.floor(Math.random()*data.length)];
+    r = parseInt(item.R);
+    g = parseInt(item.G);
+    b = parseInt(item.B); */
+    r = parseInt(random(255));
+    g = parseInt(random(255));
+    b = parseInt(random(255));
+
+
    
 }
 
