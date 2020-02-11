@@ -127,3 +127,8 @@ function predictColor(r,g,b){
              return"cyan";  
     } */
  }
+
+ function downloadModel(){
+    const saveResult =  model.save('downloads://model');
+    console.log(saveResult);
+ }

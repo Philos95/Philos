@@ -1,0 +1,33 @@
+:root {
+    --div-height: 75px;
+    
+  }
+.file-container{
+    height: var(--div-height);
+    width: 250px;
+    background-color: #555;
+    border : 1px solid black;
+    
+    text-align: center;
+    color:whitesmoke;
+}
+.file-container-span{
+    margin-top:50px;
+}
+
+
+.remove-container{
+    height: var(--div-height);
+    width: 50px;
+    background-color: #D23131;
+    border : 1px solid black;
+}
+
+
+
+.img-remove-file{
+    margin-top: calc(calc(var(--div-height)/2) - 14px);
+}
+.img-remove-file:hover{
+    cursor: pointer;
+}

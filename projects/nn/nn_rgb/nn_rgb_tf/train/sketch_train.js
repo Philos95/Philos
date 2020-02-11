@@ -1,6 +1,9 @@
-const TOT_DATA = 1000;
+const TOT_DATA = 10;
 const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 10;
+const NUM_EPOCHS = 1;
+
+
+
 
 let getTheData = false;
 let trainComplete = false;
@@ -28,6 +31,9 @@ let model;
 let actualLoss=0;
 let loss= new Array();
 
+let FrameSlider;
+let frameSpan;
+let buttonDownload;
 
 let labelList = [
     "blue",
@@ -36,7 +42,7 @@ let labelList = [
     "yellow",
     "magenta", 
     "cyan"  
-]
+];
 
 
 
@@ -45,6 +51,9 @@ async function setup(){
 
     var cnv = createCanvas(W+220,H);
     cnv.parent('sketch-holder');
+
+    buttonDownload = select("#downloadModel");
+    buttonDownload.mousePressed(downloadModel);
 
     FrameSlider = select('#frameSlider');
     frameSpan = select('#frame');

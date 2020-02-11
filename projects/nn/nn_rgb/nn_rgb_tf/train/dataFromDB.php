@@ -31,7 +31,7 @@
 
 
 
-    if($_GET['action']=="takeData"){
+    /* if($_GET['action']=="takeData"){
       if($_GET['limit']){  
         $query ="SELECT R,G,B FROM philos.colors order by RAND() limit 1 ";
         //Totale
@@ -43,10 +43,7 @@
       }
       
         
-    }
-
-
-  
+    } */
 
 
 ?>

@@ -22,11 +22,11 @@
 
 <script>
 $("#train").on("click",function(){
-    window.location.replace("nn_rgb.php");
+    window.location.replace("train/rgb_train.php");
 });
 
 $("#upload").on("click",function(){
-    window.location.replace("nn_rgb_upload.php");
+    window.location.replace("upload/rgb_upload.php");
 })
 
 </script>
