@@ -145,9 +145,9 @@ body{
   }
 
   #sketch-holder{
-   
-    padding-left :15%;
-    padding-right:15%
+    margin: auto;
+    /* padding-left :15%;
+    padding-right:15%; */
   }
 
   .sketch-wrapper{
