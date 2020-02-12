@@ -54,6 +54,8 @@ async function train(model,xs,ys){
 
     const percentChange = 1/ TRAIN_TIMES / NUM_EPOCHS;
     let percentage = 0;
+    let startEpochTime=0;
+    startTime = Date.now();
     for(var i=1;i<TRAIN_TIMES+1;i++){
     
         const config={
@@ -61,19 +63,30 @@ async function train(model,xs,ys){
             epochs:NUM_EPOCHS,
             validationSplit:0.1,
             callbacks:{
-                onTrainBegin:(logs)=>{
-                    startTime = Date.now()/1000
+                onEpochBegin:(epochs,logs)=>{
+                   startEpochTime = Date.now();
+        
                 },
                 onEpochEnd:(epochs,logs)=>{
                     percentage += percentChange;
                     trainPerc = parseFloat(percentage*100).toFixed(2);
-                    actualLoss = logs.loss.toFixed(5);
-                    timeLeft = parseInt((((Date.now()/1000)-startTime)/(i+epochs))*((TRAIN_TIMES+NUM_EPOCHS)-(i+epochs)));
                     
+                    let leftPerc = 100-trainPerc;
+                    
+                    let millis = Date.now() - startEpochTime;
 
-                    console.log(logs.loss);
-                    //console.log(((Date.now()-startTime)/trainPerc)*(100-trainPerc));
-                    //console.log(100-trainPerc);
+                    let LPperSec = parseFloat(leftPerc*millis).toFixed(2);
+                    timeLeft = (LPperSec/1000)/(100/(TRAIN_TIMES*NUM_EPOCHS));
+
+
+                    hLeft =  Math.floor(timeLeft / 3600);
+                    let remainder =  timeLeft % 3600;
+                    mLeft =  Math.floor(remainder / 60);
+                    remainder = remainder %60;
+                    sLeft =  Math.floor(remainder);
+                    
+                    actualLoss = logs.loss.toFixed(5);
+                    
                 },
                 onBatchEnd: async (batch, logs) => {
                     await tf.nextFrame();
@@ -128,7 +141,3 @@ function predictColor(r,g,b){
     } */
  }
 
- function downloadModel(){
-    const saveResult =  model.save('downloads://model');
-    console.log(saveResult);
- }

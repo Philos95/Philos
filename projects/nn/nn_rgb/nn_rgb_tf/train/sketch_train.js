@@ -1,6 +1,6 @@
-const TOT_DATA = 10;
-const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 1;
+const TOT_DATA = 1000;
+const TRAIN_TIMES = 5;
+const NUM_EPOCHS = 50;
 
 
 
@@ -20,8 +20,13 @@ let xs,ys;
 let W =750;
 let H= 500;
 
-let startTime=0;
 let timeLeft=0;
+let hLeft=0,mLeft=0,sLeft=0;
+
+let startTime =0;
+let timeTot=0;
+let hTot=0,mTot=0,sTot=0;
+
 
 
 let data;
@@ -104,6 +109,14 @@ async function setup(){
         console.log("training Done")
 
         trainComplete= true;
+        timeTot = Math.floor((Date.now() - startTime)/1000);
+
+        hTot =  Math.floor(timeTot / 3600);
+        let temp =  timeTot % 3600;
+        mTot =  Math.floor(temp / 60);
+        temp = temp %60;
+        sTot =  Math.floor(temp);
+
       
     });
 
@@ -130,7 +143,7 @@ async function draw(){
             text('Training the AI', width/2, (height/2) -50);
             text('Training at: '+trainPerc+'%', width/2, height/2);
             text('LOSS: '+actualLoss, width/2, (height/2)+50);
-           // text('TimeLeft: '+timeLeft+'s', width/2, (height/2)+100);
+            text('Time Left: '+hLeft+'h '+mLeft+'m '+sLeft+'s', width/2, (height/2)+100);
         }else{
             //Train Complete
             if(!startGame){
@@ -141,6 +154,7 @@ async function draw(){
                 text('Training Complete!', width/2, (height/2) -50);
                 text('Click to start the game! ', width/2, height/2);
                 text('LOSS: '+actualLoss, width/2, (height/2)+50);
+                text('Tot Time: '+hTot+'h '+mTot+'m '+sTot+'s', width/2, (height/2)+100);
             }else{
                 //Start the game
                 tf.tidy(() => {
@@ -322,3 +336,9 @@ function mouseClicked(){
         }
     }
 }
+
+
+function downloadModel(){
+    const saveResult =  model.save('downloads://model');
+    console.log(saveResult);
+ }
