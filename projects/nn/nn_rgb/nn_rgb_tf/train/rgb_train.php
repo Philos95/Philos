@@ -12,7 +12,9 @@
     <!-- Our sketch will go here! -->
     </div>
     <div class ="sketch-wrapper">
-   
+        <input type="text"  id= "dataInput" value="<?php echo $_GET['data'] ?>" hidden>
+        <input type="text" id= "trainInput" value="<?php echo $_GET['train'] ?>" hidden>
+        <input type="text" id= "epochsInput" value="<?php echo $_GET['epochs'] ?>" hidden>
         <p>
             <div class ="row">
                 <div class= "col-md-6">
@@ -20,11 +22,9 @@
                 </div>
 
                 <div class= "col-md-6">
-                    <button type="button" class="btn btn-primary" id="downloadModel" >Download Model</button> 
+                    <button type="button" class="btn btn-primary" id="downloadModel" disabled>Download Model</button> 
                 </div>
             </div>
-            
-            
         </p>
     
     </div>

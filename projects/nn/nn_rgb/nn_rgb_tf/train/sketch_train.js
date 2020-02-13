@@ -1,8 +1,10 @@
-const TOT_DATA = 1000;
-const TRAIN_TIMES = 5;
-const NUM_EPOCHS = 50;
+let dataInput; 
+let trainInput; 
+let epochsInput; 
 
-
+let TOT_DATA;
+let TRAIN_TIMES;
+let NUM_EPOCHS;
 
 
 let getTheData = false;
@@ -56,6 +58,16 @@ async function setup(){
 
     var cnv = createCanvas(W+220,H);
     cnv.parent('sketch-holder');
+
+        
+    dataInput =  select("#dataInput");
+    trainInput =  select("#trainInput");
+    epochsInput =  select("#epochsInput");
+
+
+    TOT_DATA = parseInt(dataInput.value());
+    TRAIN_TIMES = parseInt(trainInput.value());
+    NUM_EPOCHS = parseInt(epochsInput.value());
 
     buttonDownload = select("#downloadModel");
     buttonDownload.mousePressed(downloadModel);
@@ -117,7 +129,7 @@ async function setup(){
         temp = temp %60;
         sTot =  Math.floor(temp);
 
-      
+        buttonDownload.removeAttribute('disabled');
     });
 
 }
@@ -144,6 +156,11 @@ async function draw(){
             text('Training at: '+trainPerc+'%', width/2, height/2);
             text('LOSS: '+actualLoss, width/2, (height/2)+50);
             text('Time Left: '+hLeft+'h '+mLeft+'m '+sLeft+'s', width/2, (height/2)+100);
+
+            textSize(16);
+            text('Tot. Data: '+TOT_DATA*6, (width/2)-100 , (height/2) +150);
+            text('Trained: '+TRAIN_TIMES,( width/2), (height/2)+150);
+            text('Epochs: '+NUM_EPOCHS, (width/2)+100, (height/2)+150);
         }else{
             //Train Complete
             if(!startGame){
@@ -155,7 +172,12 @@ async function draw(){
                 text('Click to start the game! ', width/2, height/2);
                 text('LOSS: '+actualLoss, width/2, (height/2)+50);
                 text('Tot Time: '+hTot+'h '+mTot+'m '+sTot+'s', width/2, (height/2)+100);
-            }else{
+
+                textSize(16);
+                text('Tot. Data: '+TOT_DATA*6, (width/2)-100 , (height/2)+150);
+                text('Train: '+TRAIN_TIMES ,( width/2), (height/2)+150);
+                text('Epochs: '+NUM_EPOCHS, (width/2)+100, (height/2)+150);
+                }else{
                 //Start the game
                 tf.tidy(() => {
                     frameRate(FrameSlider.value());
