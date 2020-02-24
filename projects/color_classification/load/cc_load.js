@@ -1,6 +1,6 @@
 //SET Model
 async function getModel(){
-    const model= await tf.loadLayersModel('http://51.83.78.82/philos/projects/nn/nn_rgb/nn_rgb_tf/model/model.json');
+    const model= await tf.loadLayersModel('http://51.83.78.82/philos/projects/color_classification/model/model.json');
     loadedModel = true;
     return model;
 }

@@ -18,9 +18,9 @@
   
 ?>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-<script src="color.js"></script>
+<script src="../color.js"></script>
 <script src="colorButton.js"></script>
-<script src="colorArray.js"></script>
+<script src="../colorArray.js"></script>
 
 <script src="test.js"></script>
  

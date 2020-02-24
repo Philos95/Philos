@@ -1,9 +1,3 @@
-const TOT_DATA = 10;
-const TRAIN_TIMES = 10;
-const NUM_EPOCHS = 1;
-
-
-
 
 let loadedModel = false;
 let startGame = false;
@@ -35,14 +29,19 @@ let frameSpan;
 
 
 let labelList = [
-    "blue",
-    "green",
     "red",
+    "green",
+    "blue",
     "yellow",
-    "magenta", 
-    "cyan"  
+    "pink", 
+    "azure",
+    "orange",
+    "purple",
+    "brown",
+    "grey",
+    "black",
+    "white"  
 ];
-
 
 
 
@@ -101,11 +100,11 @@ async function draw(){
 
                 let predictC = predictColor(r,g,b)
                 
-                printColor(predictC,255,80);
+                printColor(predictC,255,H/12,W,H);
             
                 let rightC = rightColor(r,g,b)
             
-                printColor(rightC,0,20);
+                printColor(rightC,0,0,W,H);
 
 
                 if(predictC == rightC){
@@ -123,25 +122,33 @@ async function draw(){
 function printBack(){
     stroke(0);
     strokeWeight(4);
-    line(0,H/2,W,H/2);
-    
-    line(W/3,0,W/3,H);
 
-    line(W*2/3,0,W*2/3,H);
+
+    line(0,H/3,W,H/3);
+    line(0,(H*2)/3,W,(H*2)/3);
+
+    line(W/4,0,W/4,H);
+    line(W/2,0,W/2,H);
+    line((W*3)/4,0,(W*3)/4,H);
     line(W,0,W,H);
-
-
-    fill(0)
+   
+    strokeWeight(2);
     textAlign(CENTER, CENTER);
-    textSize(40);
-    text('Blue', W/6, 40);
-    text('Green', W/2, 40);
-    text('Red', W*5/6, 40);
+    textSize(20);
+    fill(0);
 
 
-    text('Yellow', W/6, (H/2)+40);
-    text('Magenta', W/2, (H/2) +40);
-    text('Cyan', W*5/6, (H/2)+ 40);
+    let l=50;
+    let i = 0;
+    for(let w=0;w<=3;w++){
+        for(let h=0;h<=2;h++){
+            
+            let wid =((W*((w*2)+1))/8); 
+            let hei = (H*((h*4)+1))/12;
+            text(labelList[i], wid, hei);
+            i++;
+        }
+    }
     
 
     textAlign(CENTER, CENTER);
@@ -163,95 +170,10 @@ function printBack(){
 }
 
 
-function printColor(color,type,y_off){
-    let x;
-    let y;
-    switch(color){
-        //1°
-        case "blue":
-            x= W/6;
-            y = H/4;
-        break;
-        //2
-        case "green":
-            x= W/2;
-            y = H/4;
-        break;
-        //3
-        case "red":
-            x= W*5/6;
-            y = H/4;
-        break;
-        //4
-        case "yellow":
-            x= W/6;
-            y = H*3/4;
-        break;
-        //5
-        case "magenta":
-            x= W/2;
-            y = H*3/4;
-        break;
-        //6
-        case "cyan":
-            x= W*5/6;
-            y = H*3/4;
-        break;
-    }
-    fill(type);
-    ellipse(x,y+y_off,40,40);
-}
-
-
-
-function rightColor(r,g,b){
-    let actualColor = rightRGB(r,g,b);
-    let limit =300;
-   
-    if((g+b)-r > limit){
-        actualColor = "cyan";
-    }else if((r+g)-b>limit){
-        actualColor =  "yellow";
-    }else if((r+b)-g>limit){
-        actualColor =  "magenta";
-
-    }
-    return actualColor;
-}
-
-function rightRGB(r,g,b){
-    let colorArray=[];
-
-    colorArray[0]=(r);
-    colorArray[1]=(g);
-    colorArray[2]=(b);
-    let pColor =max(colorArray);
-    
-
-    switch(pColor){
-         case colorArray[0]:
-            return "red";
-         case colorArray[1]:
-            return "green";
-         case colorArray[2]:
-            return "blue";
-    }
-}
-
-
-
-
 function pickColor(){
-    /* var item = data[Math.floor(Math.random()*data.length)];
-    r = parseInt(item.R);
-    g = parseInt(item.G);
-    b = parseInt(item.B); */
     r = parseInt(random(255));
     g = parseInt(random(255));
-    b = parseInt(random(255));
-
-
-   
+    b = parseInt(random(255));  
 }
 
 

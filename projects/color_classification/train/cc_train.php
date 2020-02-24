@@ -35,6 +35,9 @@
   
 ?>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+<script src="../cFunctions.js"></script>
+<script src="../color.js"></script>
+<script src="../colorArray.js"></script>
 <script src="cc_train.js"></script>
 <script src="sketch_train.js"></script>
  

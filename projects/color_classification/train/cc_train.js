@@ -23,7 +23,7 @@ async function setModel(){
     //Add a single hidden layer
     model.add(tf.layers.dense({
         inputShape: [3], 
-        units: 7,
+        units: 8,
         activation: 'sigmoid'
     }));
 
@@ -32,7 +32,7 @@ async function setModel(){
 
     //Add output layer
     model.add(tf.layers.dense({
-        units: 6, 
+        units: 12, 
         activation: 'softmax'
     }));
 
@@ -113,31 +113,6 @@ function predictColor(r,g,b){
     let label = labelList[index];
 
     return label;
-    /* //tensor.print();
-
-    let values = tensor.dataSync();
-    let colorArray = Array.from(values);
-
-    let colorPredicted = 0;
- 
-    for(let i =1; i<colorArray.length;i++){
-        if(colorArray[i]>colorArray[colorPredicted]){
-            colorPredicted = i;
-        }
-    }
-    switch (colorPredicted){
-         case 0:
-             return"blue";
-         case 1:
-             return"green";
-         case 2:
-             return"red";
-         case 3:
-             return"yellow";
-         case 4:
-             return"magenta"; 
-         case 5:
-             return"cyan";  
-    } */
+    
  }
 
