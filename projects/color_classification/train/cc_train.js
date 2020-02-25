@@ -28,7 +28,10 @@ async function setModel(){
     }));
 
     //Add hidden layer
-    //model.add(tf.layers.dense({units: 8, activation: 'sigmoid'}));
+    model.add(tf.layers.dense({
+        units: 8,
+        activation: 'sigmoid'
+    }));
 
     //Add output layer
     model.add(tf.layers.dense({
@@ -36,7 +39,7 @@ async function setModel(){
         activation: 'softmax'
     }));
 
-    const sgdOpt = tf.train.sgd(0.25);
+    const sgdOpt = tf.train.sgd(0.5);
 
     model.compile({
         optimizer: sgdOpt,
@@ -62,6 +65,7 @@ async function train(model,xs,ys){
             shuffle:true,
             epochs:NUM_EPOCHS,
             validationSplit:0.1,
+            batchSize:512,
             callbacks:{
                 onEpochBegin:(epochs,logs)=>{
                    startEpochTime = Date.now();
@@ -86,6 +90,7 @@ async function train(model,xs,ys){
                     sLeft =  Math.floor(remainder);
                     
                     actualLoss = logs.loss.toFixed(5);
+                    console.log(logs.loss.toFixed(5));
                     
                 },
                 onBatchEnd: async (batch, logs) => {

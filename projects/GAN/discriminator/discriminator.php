@@ -19,20 +19,20 @@
   
 ?>
 <script>
-    const labelList = [
-        "red",
-        "green",
-        "blue",
-        "yellow",
-        "pink", 
-        "azure",
-        "orange",
-        "purple",
-        "brown",
-        "grey",
-        "black",
-        "white"  
-    ];
+const labelList = [
+    "red",
+    "green",
+    "blue",
+    "yellow",
+    "pink", 
+    "azure",
+    "orange",
+    "purple",
+    "brown",
+    "grey",
+    "black",
+    "white"  
+];
 </script>
 
 
@@ -40,10 +40,10 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-<script src="cFunction.js"></script>
-<script src="color.js"></script>
-<script src="colorArray.js"></script>
-<script src="gan.js"></script>
+<script src="../cFunction.js"></script>
+<script src="../color.js"></script>
+<script src="../colorArray.js"></script>
+<script src="discriminator.js"></script>
 <script src="sketch.js"></script>
  
 

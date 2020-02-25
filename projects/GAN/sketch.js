@@ -13,15 +13,6 @@ let model;
 
 let result;
 
-let labelList = [
-    "red",
-    "green",
-    "blue",
-    "yellow",
-    "magenta", 
-    "cyan"  
-];
-
 
 async function setup(){
 
@@ -68,54 +59,10 @@ function draw(){
 }
 
 
-function labelToArray(label){
-    switch(label){
-        case "red":
-            return [1,0,0,0,0,0];
-        break;
-        case "green":
-            return [0,1,0,0,0,0];
-        break;
-        case "blue":
-            return [0,0,1,0,0,0];
-        break;
-        case "yellow":
-            return [0,0,0,1,0,0];
-        break;
-        case "magenta":
-            return [0,0,0,0,1,0];
-        break;
-        case "cyan":
-            return [0,0,0,0,0,1];
-        break;
-    }
-}
 
 
 
-
-function arrayTotoLabel(array){
-    if(Array.isArray(array)){
-    let colorPredicted = 0;
-
-   for(let i =1; i<array.length;i++){
-       if(array[i]>array[colorPredicted]){
-           colorPredicted = i;
-       }
-   }
-   switch (colorPredicted){
-        case 0:
-            return"red";
-        case 1:
-            return"green";
-        case 2:
-            return"blue";
-        case 3:
-            return"yellow";
-        case 4:
-            return"magenta"; 
-        case 5:
-            return"cyan";  
-   }
-    }
+function getRandomColorData(){
+    let color_name  = labelList[Math.floor(Math.random()*labelList.length)];
+    return new Color(color_name, parseInt(random(255)), parseInt(random(255)), parseInt(random(255)));
 }
