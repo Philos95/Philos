@@ -23,13 +23,13 @@ async function setModel(){
     //Add a single hidden layer
     model.add(tf.layers.dense({
         inputShape: [3], 
-        units: 8,
+        units: 12,
         activation: 'sigmoid'
     }));
 
     //Add hidden layer
     model.add(tf.layers.dense({
-        units: 8,
+        units: 12,
         activation: 'sigmoid'
     }));
 
@@ -55,11 +55,17 @@ async function setModel(){
 //Train AI
 async function train(model,xs,ys){  
 
+    const tot_train = TRAIN_TIMES*NUM_EPOCHS;
+    let actual_train = -1;
+    let steps=[2,4,8];
+    let i_steps =0;
+
     const percentChange = 1/ TRAIN_TIMES / NUM_EPOCHS;
     let percentage = 0;
     let startEpochTime=0;
     startTime = Date.now();
     for(var i=1;i<TRAIN_TIMES+1;i++){
+        actual_train++;
     
         const config={
             shuffle:true,
@@ -68,7 +74,14 @@ async function train(model,xs,ys){
             batchSize:512,
             callbacks:{
                 onEpochBegin:(epochs,logs)=>{
-                   startEpochTime = Date.now();
+                    if(actual_train>=(tot_train-(tot_train/steps[i_steps]))){
+                        model.optimizer.setLearningRate(model.optimizer.learningRate/2);
+                        i_steps++;
+                        console.log("LR: "+model.optimizer.learningRate);
+                    }
+
+                    actual_train++;
+                    startEpochTime = Date.now();
         
                 },
                 onEpochEnd:(epochs,logs)=>{

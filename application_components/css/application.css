@@ -1,7 +1,7 @@
 :root{
-  --main-bg-color: rgb(117,176,236);
-  --second-bg-color:rgb(51,139,227);
-  --third-bg-color:	rgb(52,102,156);
+  --main-bg-color: rgb(255, 255, 255);
+  --second-bg-color:rgb(140, 198, 255);
+  --third-bg-color:	rgb(89, 169, 255);
   --main-txt-color: rgb(52,64,84);
   --second-txt-color: rgb(22,28,37);
 }
@@ -82,7 +82,7 @@ body{
 
     float:left;
     width : 80%;
-    background-color: var(--third-bg-color);
+    /*background-color: var(--third-bg-color);*/
     padding: 2%;
     margin: 2%;
     margin-left:10%;
