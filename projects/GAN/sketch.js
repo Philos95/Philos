@@ -1,66 +1,139 @@
-const TOT_DATA=10;
+const TOT_DATA=1000;
 
-let W =750;
-let H= 500;
+let W =1080;
+let H= 720;
+
+let trainButton;
+let sampleButton;
+let downloadButton;
 
 
-let data;
 let getTheData=false;
 
-let model;
+
+let gan = new GAN();
 
 
 
-let result;
+function preload(){
+    trainButton= select('#train');
+    trainButton.mousePressed(train);
+    sampleButton= select('#sample');
+    sampleButton.mousePressed(sample);
+    sampleButton= select('#download');
+    sampleButton.mousePressed(downloadModel);
+}
+
 
 
 async function setup(){
 
-    var cnv = createCanvas(W+220,H);
+    var cnv = createCanvas(W,H);
     cnv.parent('sketch-holder');
 
-    data = await getData();
-    console.log("Get Data!");
-    getTheData = true;
+    console.log("Start Loading");
+    await gan.load(TOT_DATA);
+    console.log("Get data for Discriminator");
+    
+    await gan.discriminator.train();
+    console.log("Discriminator Trained!");
+
+    await gan.setModel();
+    console.log("Gan Model Setted");
+    
+    background(0);
+    noLoop();
+}
 
 
-    model = await setModel();
-    console.log("Set Model!");
 
-    tf.util.shuffle(data);
+async function train(num=1000) {
+
+    
+
+    console.log('starting....');
+    document.querySelector('#train').disabled = true;
+    //trainButton.setAttributes('disabled', true);
+    for (let i=0; i < num; i++) {
+      document.querySelector('#train').innerHTML = i + '/' + num;
+      
+      const COSTS = await gan.train();
+     
+      if (i % 50 === 0 || i === (num-1)) {
+        console.log('i', i);
+        console.log('discriminator cost', COSTS.dCost);
+        console.log('generator cost', COSTS.gCost);
+      }
+    }
+    document.querySelector('#train').innerHTML = 'Train';
+    document.querySelector('#train').disabled = false;
+    console.log('done...');
+}
 
 
-    let colors = [];
-    let labels = [];
-    for (let record of data) {
-      let col = [parseFloat(record.R / 255), parseFloat(record.G / 255), parseFloat(record.B / 255), labelToArray(record.color)];
-      //col.flat(); 
-      colors.push(col.flat());
-      labels.push(labelList.indexOf(record.color));  
+
+async function sample() {
+    await tf.nextFrame();
+
+    let synthData = gan.generator.generate();
+
+    let count =0;
+    while(!isTrue(synthData)){
+        synthData = gan.generator.generate();
+        
+        if(count >= 1000){
+            break;
+        } else{count++;
+        }
+        
     }
 
+    if (count>=1000){
+        console.log("could not generate a color");
+    }else{
+        let s_r = parseInt(synthData[0]*255);
+        let s_g = parseInt(synthData[1]*255);
+        let s_b = parseInt(synthData[2]*255);
+        let s_label = valueToLabel(synthData[3],labelList,gan.discriminator.sample);
 
-    xs = tf.tensor2d(colors);
+        let synth_color = new Color(s_label,s_r,s_g,s_b);
+        background(0);
+        synth_color.show(W/2,H/2,200,200);
+        console.log(synthData);
+        console.log("R : "+s_r+" G: "+s_g+" B: "+s_b+" Label: "+s_label);
 
+    }
 
+    
 
-
-
-    result = discriminate(189,250,0,[1,0,0,0,0,0]);
-
-    console.log(result);
-
+    
 
 }
 
-function draw(){
-    background(0);
+function isTrue(synthData){
+
+    let s_r = parseInt(synthData[0]*255);
+    let s_g = parseInt(synthData[1]*255);
+    let s_b = parseInt(synthData[2]*255);
+    let s_label = valueToLabel(synthData[3],labelList,gan.discriminator.sample);
+
+    let synth_color = new Color(s_label,s_r,s_g,s_b);
+    let response = gan.discriminator.discriminate(synth_color,null);
+
+    if (response[0]>response[1]){
+    //if (response>0.5){
+        return true;
+    }else{
+        return false;
+    }
 
 }
 
 
-
-
+function downloadModel(){
+    const saveResult =  gan.model.save('downloads://model');
+    console.log(saveResult);
+}
 
 function getRandomColorData(){
     let color_name  = labelList[Math.floor(Math.random()*labelList.length)];

@@ -1,121 +1,195 @@
-//GET Data
-async function getData(){
-   
-    const colorsDataReq = await fetch('dataFromDB.php?action=takeData&limit='+TOT_DATA);  
-    const colorsData = await colorsDataReq.json();  
-    const cleaned = colorsData.map(colorS => ({
-        R: colorS.R,
-        G: colorS.G,
-        B: colorS.B,
-        color:colorS.color,
-    }))
-    .filter(colorS => (colorS.R != null && colorS.G != null && colorS.B != null && colorS.color != null));
-    
-    return cleaned;
-   
-}
+class GAN{
+    constructor(generator,discriminator){
 
-
-
-
-//SET Model
-async function setModel(){
-    let model = tf.sequential();
-
-    //Add hidden layer
-    model.add(tf.layers.dense({
-        inputShape: [15], 
-        units: 10,
-        activation: 'sigmoid'
-    }));
-
-    //Add hidden layer
-    model.add(tf.layers.dense({units: 8, activation: 'sigmoid'}));
-
-    //Add output layer
-    model.add(tf.layers.dense({
-        units: 1, 
-        activation: 'sigmoid'
-    }));
-
-    const sgdOpt = tf.train.sgd(0.25);
-
-    model.compile({
-        optimizer: sgdOpt,
-        //loss:'meanSquaredError',
-        loss: 'categoricalCrossentropy',
-        metrics: ['accuracy']
-    })
-
-    return model;
-}
-
-
-
-
-async function train(model,xs,ys){  
-
-
-    const percentChange = 1/ TRAIN_TIMES / NUM_EPOCHS;
-    let percentage = 0;
-    let startEpochTime=0;
-    startTime = Date.now();
-    for(var i=1;i<TRAIN_TIMES+1;i++){
-    
-        const config={
-            shuffle:true,
-            epochs:NUM_EPOCHS,
-            validationSplit:0.1,
-            callbacks:{
-                onEpochBegin:(epochs,logs)=>{
-                   startEpochTime = Date.now();
-        
-                },
-                onEpochEnd:(epochs,logs)=>{
-                    percentage += percentChange;
-                    trainPerc = parseFloat(percentage*100).toFixed(2);
-                    
-                    let leftPerc = 100-trainPerc;
-                    
-                    let millis = Date.now() - startEpochTime;
-
-                    let LPperSec = parseFloat(leftPerc*millis).toFixed(2);
-                    timeLeft = (LPperSec/1000)/(100/(TRAIN_TIMES*NUM_EPOCHS));
-
-
-                    hLeft =  Math.floor(timeLeft / 3600);
-                    let remainder =  timeLeft % 3600;
-                    mLeft =  Math.floor(remainder / 60);
-                    remainder = remainder %60;
-                    sLeft =  Math.floor(remainder);
-                    
-                    actualLoss = logs.loss.toFixed(5);
-                    
-                },
-                onBatchEnd: async (batch, logs) => {
-                    await tf.nextFrame();
-                }
-            }
+        if(generator){
+            this.generator = generator;
+        }else{
+            this.generator = new Generator();
         }
-        await model.fit(xs,ys,config);
-       /*  trainPerc = i*100/TRAIN_TIMES;
-        actualLoss = response.history.loss[0];
-        console.log(response.history.loss); */
+
+        if(discriminator){
+            this.discriminator = discriminator;
+        }else{
+            this.discriminator = new Discriminator();
+        }
+
+        this.batch = 40;
+        
+
     }
+
+
+    async load(totData){
+        await this.discriminator.setData(totData);
+    }
+    
+
+
+    async setModel(){
+        let model = tf.sequential();
+       
+        model.add(this.generator.gLayer0);
+        model.add(this.generator.gLayer1);
+        model.add(this.generator.gLayer2);
+
+        
+        
+        model.add(this.discriminator.dLayer0);
+        model.add(this.discriminator.dLayer1);
+        model.add(this.discriminator.dLayer2);
+    
+        
+
+        
+
+
+        const sgdOpt = tf.train.sgd(0.025);
+
+        await  model.compile({
+            optimizer: sgdOpt,
+        /*  loss:'meanSquaredError', */
+            loss: tf.losses.softmaxCrossEntropy,
+            metrics: ['accuracy']
+        })
+
+        this.model = model;
+
+
+
+        this.gLayer0=this.model.getLayer(null,0);
+        this.gLayer1=this.model.getLayer(null,1);
+        this.gLayer2=this.model.getLayer(null,2);
+        
+
+        this.dLayer0=this.model.getLayer(null,3);
+        this.dLayer1=this.model.getLayer(null,4);
+        this.dLayer2=this.model.getLayer(null,5);
+
+    }
+
+    setGenWeights(){
+        this.generator.model.layers[0].setWeights(this.model.layers[0].getWeights());
+        this.generator.model.layers[1].setWeights(this.model.layers[1].getWeights());
+        this.generator.model.layers[2].setWeights(this.model.layers[2].getWeights());
+
+
+    }
+
+
+    setDisWeights(){
+        this.discriminator.model.layers[0].setWeights(this.model.layers[3].getWeights());
+        this.discriminator.model.layers[1].setWeights(this.model.layers[4].getWeights());
+        this.discriminator.model.layers[2].setWeights(this.model.layers[5].getWeights());
+
+
+    }
+
+    getDisWeights(){
+        this.model.layers[3].setWeights(this.discriminator.model.layers[0].getWeights());
+        this.model.layers[4].setWeights(this.discriminator.model.layers[1].getWeights());
+        this.model.layers[5].setWeights(this.discriminator.model.layers[2].getWeights());
+    }
+
+    async  train(){
+        let response;
+        response = await this.discriminator.trainSingleBatch(this.batch);
+        
+    
+        this.getDisWeights();
+
+        //ALLENO DISCRIMINATOR
+        this.gLayer0.trainable = false;
+        this.gLayer1.trainable = false;
+        this.gLayer2.trainable = false;
+
+
+        let dxs;
+        let dys;
+
+    
+        let dlabels =[];
+
+        for (let i=0; i<this.batch;i++){
+          
+            dlabels.push([0,1])
+        }
+        
+        
+        dxs =this.generator.getSeed(this.generator.SEED_SIZE,this.generator.SEED_STD,this.batch);
+        dys = tf.tensor2d(dlabels);
+
+
+        
+    
+        response = await this.model.trainOnBatch(dxs,dys);
+        let dCost = response[0];
+
+
+
+        this.gLayer0.trainable = true;
+        this.gLayer1.trainable = true;
+        this.gLayer2.trainable = true;
+
+        this.setDisWeights();
+
+        //ALLENO GENERATOR
+
+    
+        this.dLayer0.trainable = false;
+        this.dLayer1.trainable = false;
+        this.dLayer2.trainable = false;
+    
+        
+        let gxs;
+        let gys;
+
+    
+        let labels =[];
+
+        for (let i=0; i<this.batch;i++){
+          
+            labels.push([1,0])
+        }
+        
+        
+        gxs =this.generator.getSeed(this.generator.SEED_SIZE,this.generator.SEED_STD,this.batch);
+        gys = tf.tensor2d(labels);
+
+
+        
+    
+        response = await this.model.trainOnBatch(gxs,gys);
+        let gCost = response[0];
+        this.dLayer0.trainable = true;
+        this.dLayer1.trainable = true;
+        this.dLayer2.trainable = true;
+
+    
+        this.setGenWeights();
+        
+    
+       return {dCost,gCost};
+    
+    }
+    
+    
+
+
+
+    async feedForward(input){
+        let results = await this.model.predict(input);
+        let response = [results.dataSync()[0],results.dataSync()[1]];
+    
+        return response;
+
+    }
+
+
+
+
+
+
 }
 
 
 
-
-
-function discriminate(r,g,b,label){
-
-    let input_array = [parseFloat(r/255),parseFloat(g/255),parseFloat(b/255),label]
-    
-    let input = tf.tensor2d([input_array.flat()]);
-    //input.print();
-    let results = model.predict(input);
-
-    return results.dataSync()[0];
-    
- }

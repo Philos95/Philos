@@ -6,9 +6,9 @@
 
     if($_GET['actions']=='upload'){
 
-        if( $_POST['data'] && $_POST['train'] && $_POST['epochs']){
+        if( $_POST['data'] && $_POST['train'] && $_POST['epochs'] && $_POST['lr']){
 
-            $data = array("data"=> $_POST['data'],"train"=>$_POST['train'],"epochs"=>$_POST['epochs']);
+            $data = array("data"=> $_POST['data'],"train"=>$_POST['train'],"epochs"=>$_POST['epochs'],"lr"=>$_POST['lr']);
             
             if($db->insert("traincolors", $data)){
                 echo "1";
@@ -23,7 +23,7 @@
 
     if($_GET['actions']=='fillInput'){
         
-        $query ="SELECT t.data,t.train,t.epochs FROM philos.traincolors as t order by t.id desc limit 1";
+        $query ="SELECT t.data,t.train,t.epochs,t.lr FROM philos.traincolors as t order by t.id desc limit 1";
         
         $sql = $db->prepare($query);
         $sql->execute();

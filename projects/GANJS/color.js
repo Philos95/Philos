@@ -13,6 +13,7 @@ class Color{
        return  Math.abs(r - this.r) + Math.abs(g - this.g) + Math.abs(b -this.b);
     }
 
+
     show(x,y,w,h){
         fill(this.r,this.g,this.b);
         rect(x,y,w,h);

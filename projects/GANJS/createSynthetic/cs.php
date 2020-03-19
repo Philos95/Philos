@@ -6,7 +6,7 @@
 
 
 
-    $titoloPagina='Discriminator';
+    $titoloPagina='GAN JS';
     include($include_root."/header.php");
 
 ?>
@@ -14,7 +14,10 @@
     <div id="sketch-holder">
     <!-- Our sketch will go here! -->
     </div>
-
+    <div class ="sketch-wrapper">
+        <button id ="load" >Load Model</button>
+        <button id ="insert" >Insert</button>
+    </div>
 
 
 <?php
@@ -46,8 +49,10 @@ const labelList = [
 <script src="../cFunction.js"></script>
 <script src="../color.js"></script>
 <script src="../colorArray.js"></script>
-<script src="discriminator.js"></script>
-<script src="sketch.js"></script>
+<script src="../data.js"></script>
+<script src="../gan.js"></script>
+
+<script src="cs.js"></script>
  
 
 

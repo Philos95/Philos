@@ -22,7 +22,7 @@
     <link rel="stylesheet" href=<?php echo $http_root."application_components/css/application.css"; ?>>
 
 
-    <title>Hello, world!</title>
+    <title><?php if($titoloPagina){ echo $titoloPagina; }else{ echo "Philo's Server";}?></title>
   </head>
   <body>
 

@@ -6,7 +6,7 @@
 
 
 
-    $titoloPagina='Discriminator';
+    $titoloPagina='Generator';
     include($include_root."/header.php");
 
 ?>
@@ -46,7 +46,7 @@ const labelList = [
 <script src="../cFunction.js"></script>
 <script src="../color.js"></script>
 <script src="../colorArray.js"></script>
-<script src="discriminator.js"></script>
+<script src="generator.js"></script>
 <script src="sketch.js"></script>
  
 

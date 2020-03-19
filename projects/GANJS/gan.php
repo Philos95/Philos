@@ -4,8 +4,9 @@
 
     include($include_root."/config.php");
 
-    
-    $titoloPagina='GAN';
+
+
+    $titoloPagina='GAN JS';
     include($include_root."/header.php");
 
 ?>
@@ -13,7 +14,6 @@
     <div id="sketch-holder">
     <!-- Our sketch will go here! -->
     </div>
-
     <div class ="sketch-wrapper">
         <button id ="train" >Train</button>
         <button id ="sample" >Sample</button>
@@ -21,26 +21,25 @@
     </div>
 
 
-
 <?php
     include($include_root."/body_bottom.php");
   
 ?>
 <script>
-    const labelList = [
-        "red",
-        "green",
-        "blue",
-        "yellow",
-        "pink", 
-        "azure",
-        "orange",
-        "purple",
-        "brown",
-        "grey",
-        "black",
-        "white"  
-    ];
+const labelList = [
+    "red",
+    "green",
+    "blue",
+    "yellow",
+    "pink", 
+    "azure",
+    "orange",
+    "purple",
+    "brown",
+    "grey",
+    "black",
+    "white"  
+];
 </script>
 
 
@@ -48,15 +47,12 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-
-
-
 <script src="cFunction.js"></script>
 <script src="color.js"></script>
 <script src="colorArray.js"></script>
-<script src="generator/generator.js"></script>
-<script src="discriminator/discriminator.js"></script>
+<script src="data.js"></script>
 <script src="gan.js"></script>
+
 <script src="sketch.js"></script>
  
 

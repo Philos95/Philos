@@ -1,10 +1,12 @@
 let dataInput; 
 let trainInput; 
 let epochsInput; 
+let lrInput;
 
 let TOT_DATA;
 let TRAIN_TIMES;
 let NUM_EPOCHS;
+let LR;
 
 
 let getTheData = false;
@@ -69,11 +71,13 @@ async function setup(){
     dataInput =  select("#dataInput");
     trainInput =  select("#trainInput");
     epochsInput =  select("#epochsInput");
+    lrInput =  select("#lrInput");
 
 
     TOT_DATA = parseInt(dataInput.value());
     TRAIN_TIMES = parseInt(trainInput.value());
     NUM_EPOCHS = parseInt(epochsInput.value());
+    LR = parseFloat(lrInput.value());
 
     buttonDownload = select("#downloadModel");
     buttonDownload.mousePressed(downloadModel);

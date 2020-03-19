@@ -24,13 +24,19 @@ async function setModel(){
     model.add(tf.layers.dense({
         inputShape: [3], 
         units: 12,
-        activation: 'sigmoid'
+        activation: 'relu6'
     }));
 
     //Add hidden layer
     model.add(tf.layers.dense({
         units: 12,
-        activation: 'sigmoid'
+        activation: 'relu6'
+    }));
+    
+    //Add hidden layer
+    model.add(tf.layers.dense({
+        units: 12,
+        activation: 'relu6'
     }));
 
     //Add output layer
@@ -39,7 +45,7 @@ async function setModel(){
         activation: 'softmax'
     }));
 
-    const sgdOpt = tf.train.sgd(0.5);
+    const sgdOpt = tf.train.sgd(LR);
 
     model.compile({
         optimizer: sgdOpt,
@@ -57,7 +63,7 @@ async function train(model,xs,ys){
 
     const tot_train = TRAIN_TIMES*NUM_EPOCHS;
     let actual_train = -1;
-    let steps=[2,4,8];
+    let steps=[3/4,1/2,1/4,1/8];
     let i_steps =0;
 
     const percentChange = 1/ TRAIN_TIMES / NUM_EPOCHS;
@@ -74,7 +80,7 @@ async function train(model,xs,ys){
             batchSize:512,
             callbacks:{
                 onEpochBegin:(epochs,logs)=>{
-                    if(actual_train>=(tot_train-(tot_train/steps[i_steps]))){
+                    if(actual_train>=(tot_train-(tot_train*steps[i_steps]))){
                         model.optimizer.setLearningRate(model.optimizer.learningRate/2);
                         i_steps++;
                         console.log("LR: "+model.optimizer.learningRate);

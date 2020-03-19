@@ -22,7 +22,7 @@
             <input type="number" class="form-control" id="data">
         </div>
         <div class="col-md-1">
-            <small>x6</small>
+            <small>x12</small>
         </div>
     </div>
 
@@ -60,6 +60,21 @@
             <input type="number" class="form-control" id ="epochs"> 
         </div>
     </div>
+
+    <!-- Forth Row -->
+    <div class="row">
+        <div class="col-md-3"></div>
+
+        <div class="col-md-3"></div>
+
+        <div class="col-md-3">
+            <label for="">LR at Start</label>
+        </div>
+
+        <div class="col-md-2">
+            <input type="number" class="form-control" id ="learningRate"> 
+        </div>
+    </div>
     
     
 
@@ -83,6 +98,7 @@
         $("#data").val(inputs.data);
         $("#trainInput").val(inputs.train);
         $("#epochs").val(inputs.epochs);
+        $("#learningRate").val(inputs.lr);
     });
 
 
@@ -98,11 +114,15 @@ $("#train").on("click",function(){
         data:{
             data :$("#data").val(),
             train :$("#trainInput").val(),
-            epochs:$("#epochs").val()
+            epochs:$("#epochs").val(),
+            lr:$("#learningRate").val()
         }
     }).done(function( result ) {
         if(result=="1"){
-            window.location.replace("train/cc_train.php?data="+$("#data").val()+"&train="+$("#trainInput").val()+"&epochs="+$("#epochs").val());
+            window.location.replace("train/cc_train.php?data="+$("#data").val()+
+                                    "&train="+$("#trainInput").val()+
+                                    "&epochs="+$("#epochs").val()+
+                                    "&lr="+$("#learningRate").val());
         }
         else{
             console.log(result);

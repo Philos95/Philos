@@ -5,19 +5,13 @@
     include($include_root."/config.php");
 
     
-    $titoloPagina='GAN';
+    $titoloPagina='GAN V2';
     include($include_root."/header.php");
 
 ?>
 
     <div id="sketch-holder">
     <!-- Our sketch will go here! -->
-    </div>
-
-    <div class ="sketch-wrapper">
-        <button id ="train" >Train</button>
-        <button id ="sample" >Sample</button>
-        <button id ="download" >Download Model</button>
     </div>
 
 
@@ -48,14 +42,10 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-
-
-
 <script src="cFunction.js"></script>
 <script src="color.js"></script>
 <script src="colorArray.js"></script>
-<script src="generator/generator.js"></script>
-<script src="discriminator/discriminator.js"></script>
+<script src="data.js"></script>
 <script src="gan.js"></script>
 <script src="sketch.js"></script>
  
