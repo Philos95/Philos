@@ -8,12 +8,7 @@
     require $classes_root."/database.php";
     
 
-    //database credentials
-    define('DBTYPE','mysql');
-    define('DBHOST','localhost');
-    define('DBUSER','phpmyadmin');
-    define('DBPASS','lggpas95');
-    define('DBNAME','philos');
+   require_once "db_config.php";
 
 
    try {

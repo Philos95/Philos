@@ -78,8 +78,82 @@ vim /usr/share/phpmyadmin/libraries/sql.lib.php
 
 cercare la stringa '(count($analyzed_sql_results['select_expr'] == 1)' e sostituirla con '((count($analyzed_sql_results['select_expr']) == 1)'
 
+
 salvare e riavviare apache con il comando:
 /etc/init.d/apache2 restart
+
+ABILITARE WEB SERVICE PHPMYADMIN:
+
+creare il file 
+sudo nano /etc/apache2/conf-available/phpmyadmin.conf
+
+e incollarci il testo seguente
+
+# phpMyAdmin default Apache configuration
+
+Alias /phpmyadmin /usr/share/phpmyadmin
+
+<Directory /usr/share/phpmyadmin>
+    Options SymLinksIfOwnerMatch
+    DirectoryIndex index.php
+
+    <IfModule mod_php5.c>
+        <IfModule mod_mime.c>
+            AddType application/x-httpd-php .php
+        </IfModule>
+        <FilesMatch ".+\.php$">
+            SetHandler application/x-httpd-php
+        </FilesMatch>
+
+        php_value include_path .
+        php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+        php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/javascript/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
+        php_admin_value mbstring.func_overload 0
+    </IfModule>
+    <IfModule mod_php.c>
+        <IfModule mod_mime.c>
+            AddType application/x-httpd-php .php
+        </IfModule>
+        <FilesMatch ".+\.php$">
+            SetHandler application/x-httpd-php
+        </FilesMatch>
+
+        php_value include_path .
+        php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+        php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/javascript/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/
+        php_admin_value mbstring.func_overload 0
+    </IfModule>
+
+</Directory>
+
+# Disallow web access to directories that don't need it
+<Directory /usr/share/phpmyadmin/templates>
+    Require all denied
+</Directory>
+<Directory /usr/share/phpmyadmin/libraries>
+    Require all denied
+</Directory>
+<Directory /usr/share/phpmyadmin/setup/lib>
+    Require all denied
+</Directory>
+
+
+Salvare e chiudere il file
+
+lanciare il comando seguente per abilitare la configurazione
+sudo a2enconf phpmyadmin.conf
+
+dobbiamo poi creare le cartelle temporanee di phpMyAdmin
+
+
+sudo mkdir -p /var/lib/phpmyadmin/tmp
+sudo chown www-data:www-data /var/lib/phpmyadmin/tmp
+
+infine dobbiamo riavviare apache con
+sudo systemctl reload apache2
+
+
+
 
 06) ABILITARE HTTPS 
 a) Collegarsi in SSH al server
