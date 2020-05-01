@@ -53,8 +53,8 @@
 
     if($_GET['action']=="takeSample"){
       if($_GET['limit']){
-
-        $query = "SELECT R,G,B,color FROM `color_classification_sample` order by rand() limit ".$_GET['limit']."";
+                                          //color_classfication_sample
+        $query = "SELECT R,G,B,color FROM `color_classification` order by rand() limit ".$_GET['limit']."";
         
         $sql = $db->prepare($query);
         $sql->execute();
