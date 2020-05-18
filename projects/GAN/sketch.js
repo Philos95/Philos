@@ -35,7 +35,7 @@ async function setup(){
     await gan.load(TOT_DATA);
     console.log("Get data for Discriminator");
     
-    await gan.discriminator.train();
+    await gan.discriminator.trainOnStart();
     console.log("Discriminator Trained!");
 
     await gan.setModel();

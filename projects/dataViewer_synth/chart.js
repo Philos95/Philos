@@ -1,8 +1,9 @@
 class Chart{
-    constructor(labels,y_steps,data,W,H,W_off,H_off){
+    constructor(labels,y_steps,data_real,data_synth,W,H,W_off,H_off){
         this.labels = labels;
         this.y_steps = y_steps;
-        this.data = data;
+        this.data_real = data_real;
+        this.data_synth = data_synth;
         this.W = W;
         this.H = H;
         this.W_off = W_off;
@@ -63,9 +64,14 @@ class Chart{
 
         strokeWeight(4);
         stroke(255,0,0);
-        for (let item of this.data){
-            this.setColorToShow(item.color);
-            point(this.getXFromLabel(item.color),this.getYFromValue(item.val))
+        for (let item of this.data_real){
+            this.setColorToShow("real");
+            point(this.getXFromLabel(item.color)-5,this.getYFromValue(item.val))
+        }
+
+        for (let item of this.data_synth){
+            this.setColorToShow("synth");
+            point(this.getXFromLabel(item.color)+5,this.getYFromValue(item.val))
         }
         stroke(255,0,0);
         /* point(this.getXFromLabel("red",X_line_length),this.getYFromValue(255,Y_line_length));
@@ -84,52 +90,18 @@ class Chart{
 
 
     
-    setColorToShow(colorName){
+    setColorToShow(d_type){
 
-        switch (colorName) {
-            case "red":
-                stroke(255,0,0);
-            break;
-            case "green":
-                stroke(0,255,0);
-            break;
-            case "blue":
-                stroke(0,0,255);
-            break;
-
-            case "yellow":
-                stroke(255,255,0);
-            break;
-            case "pink":
-                stroke(255,0,255);
-            break;
-            case "azure":
-                stroke(0,255,255);
-            break;
-
-            case "orange":
-                stroke(255,128,0);
-            break;
-            case "purple":
-                stroke(128,0,255);
-            break;
-            case "brown":
-                stroke(128,0,0);
-            break;
-
-
-
-            case "black":
-                stroke(0,0,0);
-            break;
-            case "grey":
-                stroke(90,90,90);
-            break;
-            case "white":
-                stroke(200,200,200);
-            break;
-
+        switch (d_type) {
+            case "synth":
+                stroke(234,67,53);
+                break;
+        
+            case "real":
+                stroke(66,133,244);
+                break;
         }
+    
     }
     getXFromLabel(label){
         let i = this.labels.indexOf(label)+1;      
